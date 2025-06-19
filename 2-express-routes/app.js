@@ -39,5 +39,11 @@ app.use("/authors", authorRouter);
 app.use("/books", bookRouter);
 app.use("/", indexRouter); // This has to be specified last
 
+// Error handling
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.status(500).send(error.message);
+});
+
 const PORT = process.env.port || 3000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
