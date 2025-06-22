@@ -6,8 +6,32 @@ const authors = [
   { id: 3, name: "Jason" },
 ];
 
+const books = [
+  { id: 1, name: "Hello World!", reserved: false },
+  { id: 2, name: "Learn Javascript", reserved: true },
+  { id: 3, name: "Harry Potter" },
+];
+
 async function getAuthorById(authorId) {
   return authors.find((author) => author.id == authorId);
 }
 
-module.exports = { getAuthorById };
+async function getBookById(bookId) {
+  return books.find((book) => book.id == bookId);
+}
+
+async function toggleBookReservedById(bookId) {
+  const book = books.find((book) => book.id == bookId);
+
+  if (book) {
+    book.reserved = !book.reserved;
+  }
+
+  return book;
+}
+
+module.exports = {
+  getAuthorById,
+  getBookById,
+  toggleBookReservedById,
+};
