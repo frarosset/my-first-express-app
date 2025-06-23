@@ -4,25 +4,21 @@
 // POST /books/:bookId/reserve
 
 const { Router } = require("express");
+const {
+  getBookById,
+  getBookReservationById,
+  postBookReservationById,
+} = require("../controllers/bookController.js");
 
 const bookRouter = Router();
 
 bookRouter.get("/", (req, res) => res.send("All books!"));
 
-bookRouter.get("/:bookId", (req, res) => {
-  const { bookId } = req.params;
-  res.send(`Book ID: ${bookId}`);
-});
+bookRouter.get("/:bookId", getBookById);
 
 bookRouter
   .route("/:bookId/reserve")
-  .get((req, res) => {
-    const { bookId } = req.params;
-    res.send(`Reservation for Book ID: ${bookId}`);
-  })
-  .post((req, res) => {
-    const { bookId } = req.params;
-    res.send(`Reservation SENT for Book ID: ${bookId}`);
-  });
+  .get(getBookReservationById)
+  .post(postBookReservationById);
 
 module.exports = bookRouter;
