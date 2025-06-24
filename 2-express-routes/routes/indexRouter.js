@@ -5,7 +5,7 @@ const indexRouter = Router();
 indexRouter.get("/", (req, res) => res.send("Index page"));
 
 indexRouter.get("/about", (req, res) =>
-  res.render("aboutView", { today: new Date() })
+  res.render("aboutView", { today: new Date(), year: 2025 })
 );
 
 indexRouter
