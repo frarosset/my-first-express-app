@@ -31,6 +31,10 @@ const express = require("express");
 
 const app = express();
 
+const path = require("node:path");
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
 const authorRouter = require("./routes/authorRouter.js");
 const bookRouter = require("./routes/bookRouter.js");
 const indexRouter = require("./routes/indexRouter.js");
