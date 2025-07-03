@@ -1,5 +1,5 @@
 const userStorage = require("../storages/usersStorage");
-const { body, validationResult } = require("express-validator");
+const { body, query, oneOf, validationResult } = require("express-validator");
 
 const maxLen = 10;
 const minAge = 18;
@@ -8,6 +8,7 @@ const maxBioLen = 120;
 const requiredErr = "is required";
 const alphaErr = "must only contain letters";
 const lengthErr = `must be between 1 and ${maxLen} characters`;
+const lengthErr2x = `must be between 1 and ${2 * maxLen} characters`;
 
 const validateUser = [
   body("firstName")
@@ -42,6 +43,24 @@ const validateUser = [
     .optional({ values: "falsy" })
     .isLength({ max: maxBioLen })
     .withMessage(`Bio must be at most ${maxBioLen} characters`),
+];
+
+const validateUserSearch = [
+  query("name")
+    .trim()
+    .optional({ values: "falsy" })
+    .isAlpha()
+    .withMessage(`Name ${alphaErr}`)
+    .isLength({ min: 1, max: 2 * maxLen })
+    .withMessage(`First name ${lengthErr2x}`),
+  query("email")
+    .trim()
+    .optional({ values: "falsy" })
+    .isEmail()
+    .withMessage("Invalid email"),
+  oneOf([query("name").notEmpty(), query("email").notEmpty()], {
+    message: "At least a name or email must be provided",
+  }),
 ];
 
 exports.usersListGet = (req, res) => {
@@ -101,3 +120,22 @@ exports.usersDeletePost = (req, res) => {
   userStorage.deleteUser(req.params.id);
   res.redirect("/");
 };
+
+exports.usersSearchGet = [
+  validateUserSearch,
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("index", {
+        title: "Users list",
+        users: userStorage.getUsers(),
+        errors: errors.array(),
+      });
+    }
+    const users = userStorage.searchUser(req.query.name, req.query.email);
+    res.render("user", {
+      title: `Search Results`,
+      users,
+    });
+  },
+];
