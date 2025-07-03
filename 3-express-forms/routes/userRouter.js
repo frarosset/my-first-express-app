@@ -5,5 +5,7 @@ const userRouter = Router();
 userRouter.get("/", userController.usersListGet);
 userRouter.get("/create", userController.usersCreateGet);
 userRouter.post("/create", userController.usersCreatePost);
+userRouter.get("/:id/update", userController.usersUpdateGet);
+userRouter.post("/:id/update", userController.usersUpdatePost);
 
 module.exports = userRouter;
