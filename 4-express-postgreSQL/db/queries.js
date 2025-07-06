@@ -13,4 +13,17 @@ async function clearAllUsernames() {
   await pool.query("DELETE FROM usernames");
 }
 
-module.exports = { getAllUsernames, insertUsername, clearAllUsernames };
+async function searchUsernames(search) {
+  const { rows } = await pool.query(
+    "SELECT * FROM usernames WHERE upper(username) LIKE upper('%' || $1 || '%')",
+    [search]
+  );
+  return rows;
+}
+
+module.exports = {
+  getAllUsernames,
+  insertUsername,
+  clearAllUsernames,
+  searchUsernames,
+};

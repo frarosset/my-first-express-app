@@ -5,7 +5,7 @@ exports.get = async (req, res) => {
   console.log("Usernames: ", usernames);
   res.render("index", {
     title: "Top users",
-    text: "Usernames: " + usernames.map((user) => user.username).join(", "),
+    text: usernames.map((user) => user.username).join(", "),
   });
 };
 
@@ -23,4 +23,13 @@ exports.newPost = async (req, res) => {
 exports.deletePost = async (req, res) => {
   await db.clearAllUsernames();
   res.redirect("/");
+};
+
+exports.searchGet = async (req, res) => {
+  const { search } = req.query;
+  const usernames = await db.searchUsernames(search);
+  res.render("search", {
+    title: `Search results for: ${search}`,
+    text: usernames.map((user) => user.username).join(", "),
+  });
 };
