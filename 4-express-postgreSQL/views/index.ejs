@@ -9,5 +9,13 @@
     <h1><%= title %></h1>
     <%= text %>
     <a href="/new">Add new</a>
+    <form action="/delete" method="post">
+      <button
+        onclick="return confirm('Are you sure you want to delete all usernames?');"
+        type="submit"
+      >
+        Clear all
+      </button>
+    </form>
   </body>
 </html>
