@@ -18,7 +18,24 @@ app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 app.get("/", (req, res) => res.render("index"));
+app.post("/sign-up", [
+  // todo: body validation and sanitization,
+  // todo: password encryption,
+  async (req, res, next) => {
+    console.log(req.body.username, req.body.password);
+    try {
+      await pool.query(
+        "INSERT INTO users (username, password) VALUES ($1, $2)",
+        [req.body.username, req.body.password]
+      );
+      res.redirect("/");
+    } catch (err) {
+      return next(err);
+    }
+  },
+]);
 
 app.listen(3000, (error) => {
   if (error) {
