@@ -74,6 +74,10 @@ app.post("/sign-up", [
     }
   },
 ]);
+app.post(
+  "/log-in",
+  passport.authenticate("local", { successRedirect: "/", failureRedirect: "/" })
+);
 
 app.listen(3000, (error) => {
   if (error) {
