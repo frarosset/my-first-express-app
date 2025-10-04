@@ -16,6 +16,13 @@ app.set("view engine", "ejs");
 
 app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.session());
+app.use((req, res, next) => {
+  const msg = req.session.messages || [];
+  res.locals.messages = msg;
+  res.locals.hasMessages = !!msg.length;
+  req.session.messages = [];
+  next();
+});
 app.use(express.urlencoded({ extended: false }));
 
 passport.use(
@@ -57,7 +64,10 @@ passport.deserializeUser(async (id, done) => {
 });
 
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
-app.get("/", (req, res) => res.render("index", { user: req.user }));
+app.get("/", (req, res) => {
+  res.render("index", { user: req.user, messages: res.locals.messages });
+});
+
 app.post("/sign-up", [
   // todo: body validation and sanitization,
   // todo: password encryption,
@@ -71,7 +81,6 @@ app.post("/sign-up", [
       const user = result.rows[0];
 
       req.login(user, (err) => {
-        console.log(user);
         if (err) {
           return next(err);
         }
@@ -84,7 +93,11 @@ app.post("/sign-up", [
 ]);
 app.post(
   "/log-in",
-  passport.authenticate("local", { successRedirect: "/", failureRedirect: "/" })
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/",
+    failureMessage: true,
+  })
 );
 app.get("/log-out", (req, res, next) => {
   req.logout((err) => {
