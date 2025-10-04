@@ -62,13 +62,21 @@ app.post("/sign-up", [
   // todo: body validation and sanitization,
   // todo: password encryption,
   async (req, res, next) => {
-    console.log(req.body.username, req.body.password);
     try {
-      await pool.query(
-        "INSERT INTO users (username, password) VALUES ($1, $2)",
+      const result = await pool.query(
+        "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
         [req.body.username, req.body.password]
       );
-      res.redirect("/");
+
+      const user = result.rows[0];
+
+      req.login(user, (err) => {
+        console.log(user);
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/");
+      });
     } catch (err) {
       return next(err);
     }
