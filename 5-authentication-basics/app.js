@@ -6,20 +6,31 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
+const pgSession = require("connect-pg-simple")(session);
+var fs = require("fs");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_CONNECTION_URI,
 });
 
+var sql =
+  'DROP TABLE "session"; ' +
+  fs.readFileSync("node_modules/connect-pg-simple/table.sql").toString();
+pool.query(sql);
+
 const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+const sessionStore = new pgSession({ pool: pool, createTableIfMissing: true });
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
   })
 );
 app.use(passport.session());
