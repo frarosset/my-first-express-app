@@ -57,7 +57,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
-app.get("/", (req, res) => res.render("index"));
+app.get("/", (req, res) => res.render("index", { user: req.user }));
 app.post("/sign-up", [
   // todo: body validation and sanitization,
   // todo: password encryption,
