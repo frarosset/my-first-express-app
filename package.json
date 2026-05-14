@@ -4,7 +4,7 @@
   "description": "A test repository to study Express framework.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,8 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "prisma": "^6.19.1"
+    "jest": "^30.4.2",
+    "prisma": "^6.19.1",
+    "supertest": "^7.2.2"
   }
 }
